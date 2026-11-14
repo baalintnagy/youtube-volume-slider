@@ -1,0 +1,46 @@
+{
+    "manifest_version": 3,
+    "name": "Volume Curve Slider for YouTube",
+    "short_name": "Volume Curve",
+    "version": "1.0.0",
+    "description": "Replace YouTube's volume slider with a customizable one: size, colors, and logarithmic, power, Bézier or custom volume curves.",
+    "minimum_chrome_version": "111",
+    "icons": {
+        "16": "icons/icon16.png",
+        "32": "icons/icon32.png",
+        "48": "icons/icon48.png",
+        "128": "icons/icon128.png"
+    },
+    "permissions": ["storage"],
+    "action": {
+        "default_title": "Volume Curve Slider",
+        "default_popup": "src/popup/popup.html",
+        "default_icon": {
+            "16": "icons/icon16.png",
+            "32": "icons/icon32.png"
+        }
+    },
+    "options_page": "src/options/options.html",
+    "content_scripts": [
+        {
+            "matches": ["https://www.youtube.com/*", "https://www.youtube-nocookie.com/*"],
+            "js": ["src/shared/settings.js", "src/content/bridge.js"],
+            "css": ["src/shared/slider.css"],
+            "run_at": "document_start",
+            "all_frames": true
+        },
+        {
+            "matches": ["https://www.youtube.com/*", "https://www.youtube-nocookie.com/*"],
+            "js": [
+                "src/shared/curves.js",
+                "src/shared/format.js",
+                "src/shared/slider.js",
+                "src/content/gain.js",
+                "src/content/main.js"
+            ],
+            "run_at": "document_start",
+            "all_frames": true,
+            "world": "MAIN"
+        }
+    ]
+}

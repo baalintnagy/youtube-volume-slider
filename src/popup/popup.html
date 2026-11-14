@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>Volume Curve Slider</title>
+        <link rel="stylesheet" href="popup.css" />
+    </head>
+    <body>
+        <header>
+            <img src="../../icons/icon32.png" alt="" width="24" height="24" />
+            <h1>Volume Curve Slider</h1>
+            <label class="switch" title="Enable on YouTube">
+                <input type="checkbox" id="enabled" />
+                <span class="knob"></span>
+            </label>
+        </header>
+
+        <label class="field">
+            <span>Volume curve</span>
+            <select id="curve"></select>
+        </label>
+
+        <label class="field">
+            <span>Slider width <output id="widthOut"></output></span>
+            <input type="range" id="width" min="30" max="400" step="1" />
+        </label>
+
+        <canvas id="mini" width="248" height="90" aria-label="Curve preview"></canvas>
+
+        <button type="button" id="openOptions">All settings &amp; curve editor</button>
+
+        <script src="../shared/curves.js"></script>
+        <script src="../shared/settings.js"></script>
+        <script src="popup.js"></script>
+    </body>
+</html>

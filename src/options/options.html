@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Volume Curve Slider — Settings</title>
+        <link rel="icon" href="../../icons/icon32.png" />
+        <link rel="stylesheet" href="../shared/slider.css" />
+        <link rel="stylesheet" href="options.css" />
+    </head>
+    <body>
+        <header class="topbar">
+            <div class="brand">
+                <img src="../../icons/icon48.png" alt="" width="32" height="32" />
+                <div>
+                    <h1>Volume Curve Slider</h1>
+                    <p class="sub">A better volume slider for YouTube</p>
+                </div>
+            </div>
+            <div class="top-actions">
+                <span id="saved" class="saved" aria-live="polite"></span>
+                <label class="switch big" title="Enable on YouTube">
+                    <input type="checkbox" data-path="enabled" />
+                    <span class="knob"></span>
+                    <span class="switch-label">Enabled</span>
+                </label>
+            </div>
+        </header>
+
+        <section class="preview-wrap" aria-label="Live preview">
+            <div class="preview-player">
+                <div class="preview-video">
+                    <span class="preview-hint"
+                        >Live preview — drag, scroll or use the arrow keys</span
+                    >
+                </div>
+                <div class="preview-progress"><div></div></div>
+                <div class="preview-controls">
+                    <svg class="pc-icon" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M8 5v14l11-7z" />
+                    </svg>
+                    <svg class="pc-icon" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z" />
+                    </svg>
+                    <div class="preview-volume yvs-host" id="previewHost">
+                        <svg class="pc-icon" viewBox="0 0 24 24" aria-hidden="true">
+                            <path
+                                d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 7.97v8.05A4.47 4.47 0 0 0 16.5 12zM14 3.23v2.06a7 7 0 0 1 0 13.42v2.06A9 9 0 0 0 14 3.23z"
+                            />
+                        </svg>
+                    </div>
+                    <span class="preview-time">1:23 / 4:56</span>
+                </div>
+            </div>
+        </section>
+
+        <main class="grid">
+            <section class="card curve-card">
+                <div class="card-head">
+                    <h2>Volume curve</h2>
+                    <div class="seg" id="scaleSeg" role="group" aria-label="Graph scale">
+                        <button type="button" data-scale="linear" class="on">Linear view</button>
+                        <button type="button" data-scale="db">dB view</button>
+                    </div>
+                </div>
+                <p class="help">
+                    How the slider position maps to loudness. Human hearing is logarithmic, so a
+                    linear slider puts almost all the useful range in the bottom quarter.
+                </p>
+
+                <div
+                    class="seg seg-wide"
+                    id="curveSeg"
+                    role="radiogroup"
+                    aria-label="Curve type"
+                ></div>
+
+                <div class="canvas-wrap">
+                    <canvas
+                        id="curveCanvas"
+                        width="560"
+                        height="380"
+                        aria-label="Volume curve graph"
+                    ></canvas>
+                </div>
+                <div class="readout" id="readout"></div>
+
+                <div class="params" data-for-curve="logarithmic">
+                    <label class="row">
+                        <span>Dynamic range</span>
+                        <input type="range" min="10" max="90" step="1" data-path="curve.dbRange" />
+                        <output data-out="curve.dbRange" data-unit=" dB"></output>
+                    </label>
+                    <p class="help">
+                        Larger range = quieter at low slider positions and finer control near
+                        silence. 40 dB is a good default; 50–60 dB suits headphones.
+                    </p>
+                </div>
+
+                <div class="params" data-for-curve="power">
+                    <label class="row">
+                        <span>Exponent</span>
+                        <input
+                            type="range"
+                            min="0.2"
+                            max="8"
+                            step="0.1"
+                            data-path="curve.exponent"
+                        />
+                        <output data-out="curve.exponent"></output>
+                    </label>
+                    <p class="help">
+                        Output = position<sup>n</sup>. 2–3 is commonly recommended; 1 is linear.
+                    </p>
+                </div>
+
+                <div class="params" data-for-curve="linear">
+                    <p class="help">
+                        Output equals slider position — the way YouTube's own slider behaves.
+                    </p>
+                </div>
+
+                <div class="params" data-for-curve="bezier">
+                    <div class="bezier-inputs">
+                        <label
+                            >x1
+                            <input
+                                type="number"
+                                min="0"
+                                max="1"
+                                step="0.01"
+                                data-path="curve.bezier.0"
+                        /></label>
+                        <label
+                            >y1
+                            <input
+                                type="number"
+                                min="0"
+                                max="1"
+                                step="0.01"
+                                data-path="curve.bezier.1"
+                        /></label>
+                        <label
+                            >x2
+                            <input
+                                type="number"
+                                min="0"
+                                max="1"
+                                step="0.01"
+                                data-path="curve.bezier.2"
+                        /></label>
+                        <label
+                            >y2
+                            <input
+                                type="number"
+                                min="0"
+                                max="1"
+                                step="0.01"
+                                data-path="curve.bezier.3"
+                        /></label>
+                    </div>
+                    <p class="help">
+                        Drag the two handles on the graph (works like CSS
+                        <code>cubic-bezier()</code>).
+                    </p>
+                </div>
+
+                <div class="params" data-for-curve="custom">
+                    <p class="help">
+                        Click the graph to add a point, drag to move, double-click or right-click a
+                        point to remove it. Use the dB view for fine control near silence.
+                    </p>
+                    <div class="btn-row">
+                        <button type="button" id="resetPoints" class="btn">Reset points</button>
+                    </div>
+                </div>
+
+                <div class="btn-row">
+                    <button type="button" id="toCustom" class="btn">
+                        Edit current curve as custom points
+                    </button>
+                </div>
+
+                <label class="row">
+                    <span>Maximum output</span>
+                    <input type="range" min="1" max="100" step="1" data-path="maxVolume" />
+                    <output data-out="maxVolume" data-unit="%"></output>
+                </label>
+                <p class="help">
+                    Caps the loudest level (slider at 100%). The full slider range is kept.
+                </p>
+            </section>
+
+            <div class="col">
+                <section class="card">
+                    <div class="card-head">
+                        <h2>Appearance</h2>
+                    </div>
+                    <div class="presets" id="presets"></div>
+
+                    <label class="row">
+                        <span>Width</span>
+                        <input
+                            type="range"
+                            min="30"
+                            max="400"
+                            step="1"
+                            data-path="appearance.width"
+                        />
+                        <output data-out="appearance.width" data-unit=" px"></output>
+                    </label>
+                    <label class="row">
+                        <span>Track height</span>
+                        <input
+                            type="range"
+                            min="1"
+                            max="16"
+                            step="1"
+                            data-path="appearance.trackHeight"
+                        />
+                        <output data-out="appearance.trackHeight" data-unit=" px"></output>
+                    </label>
+                    <label class="row">
+                        <span>Handle size</span>
+                        <input
+                            type="range"
+                            min="0"
+                            max="28"
+                            step="1"
+                            data-path="appearance.thumbSize"
+                        />
+                        <output data-out="appearance.thumbSize" data-unit=" px"></output>
+                    </label>
+                    <label class="row">
+                        <span>Corner radius</span>
+                        <input
+                            type="range"
+                            min="0"
+                            max="14"
+                            step="1"
+                            data-path="appearance.radius"
+                        />
+                        <output data-out="appearance.radius" data-unit=" px"></output>
+                    </label>
+
+                    <div class="colors">
+                        <label class="color"
+                            ><input type="color" data-path="appearance.fillColor" /><span
+                                >Fill</span
+                            ></label
+                        >
+                        <label class="color"
+                            ><input type="color" data-path="appearance.thumbColor" /><span
+                                >Handle</span
+                            ></label
+                        >
+                        <label class="color"
+                            ><input type="color" data-path="appearance.trackColor" /><span
+                                >Track</span
+                            ></label
+                        >
+                        <label class="color"
+                            ><input type="color" data-path="appearance.labelColor" /><span
+                                >Label</span
+                            ></label
+                        >
+                    </div>
+                    <label class="row">
+                        <span>Track opacity</span>
+                        <input
+                            type="range"
+                            min="0"
+                            max="1"
+                            step="0.01"
+                            data-path="appearance.trackOpacity"
+                        />
+                        <output
+                            data-out="appearance.trackOpacity"
+                            data-scale="100"
+                            data-unit="%"
+                        ></output>
+                    </label>
+
+                    <label class="row">
+                        <span>Label next to slider</span>
+                        <select data-path="appearance.label">
+                            <option value="none">None</option>
+                            <option value="position">Slider position (%)</option>
+                            <option value="output">Actual output (%)</option>
+                            <option value="db">Actual output (dB)</option>
+                        </select>
+                    </label>
+                    <label class="switch">
+                        <input type="checkbox" data-path="appearance.tooltip" />
+                        <span class="knob"></span>
+                        <span class="switch-label">Tooltip while hovering / dragging</span>
+                    </label>
+                    <label class="switch">
+                        <input type="checkbox" data-path="appearance.expandOnHover" />
+                        <span class="knob"></span>
+                        <span class="switch-label">Collapse until hovered (like YouTube)</span>
+                    </label>
+                </section>
+
+                <section class="card">
+                    <div class="card-head">
+                        <h2>Behavior</h2>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" data-path="behavior.wheel" />
+                        <span class="knob"></span>
+                        <span class="switch-label">Mouse wheel over the slider changes volume</span>
+                    </label>
+                    <label class="row">
+                        <span>Wheel step</span>
+                        <input
+                            type="range"
+                            min="0.5"
+                            max="25"
+                            step="0.5"
+                            data-path="behavior.wheelStep"
+                        />
+                        <output data-out="behavior.wheelStep" data-unit="%"></output>
+                    </label>
+                    <label class="switch">
+                        <input type="checkbox" data-path="behavior.arrowKeys" />
+                        <span class="knob"></span>
+                        <span class="switch-label">↑ / ↓ keys in the player move this slider</span>
+                    </label>
+                    <label class="row">
+                        <span>Key step</span>
+                        <input
+                            type="range"
+                            min="0.5"
+                            max="25"
+                            step="0.5"
+                            data-path="behavior.keyStep"
+                        />
+                        <output data-out="behavior.keyStep" data-unit="%"></output>
+                    </label>
+                    <label class="row">
+                        <span>Smoothing</span>
+                        <input
+                            type="range"
+                            min="0"
+                            max="300"
+                            step="5"
+                            data-path="behavior.smoothingMs"
+                        />
+                        <output data-out="behavior.smoothingMs" data-unit=" ms"></output>
+                    </label>
+                    <p class="help">
+                        Ramps volume changes over a few milliseconds so dragging never clicks or
+                        crackles. 0 = instant.
+                    </p>
+                </section>
+
+                <section class="card">
+                    <div class="card-head">
+                        <h2>Backup</h2>
+                    </div>
+                    <div class="btn-row">
+                        <button type="button" id="exportBtn" class="btn">Export settings</button>
+                        <button type="button" id="importBtn" class="btn">Import…</button>
+                        <input type="file" id="importFile" accept="application/json,.json" hidden />
+                        <button type="button" id="resetBtn" class="btn danger">
+                            Reset to defaults
+                        </button>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <footer class="foot">
+            Settings sync across your Chrome profile and apply instantly to open YouTube tabs. Not
+            affiliated with YouTube or Google.
+        </footer>
+
+        <script src="../shared/curves.js"></script>
+        <script src="../shared/settings.js"></script>
+        <script src="../shared/format.js"></script>
+        <script src="../shared/slider.js"></script>
+        <script src="curve-editor.js"></script>
+        <script src="options.js"></script>
+    </body>
+</html>

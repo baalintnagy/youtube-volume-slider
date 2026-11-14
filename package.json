@@ -1,0 +1,26 @@
+{
+    "name": "youtube-volume-slider",
+    "version": "1.0.0",
+    "private": true,
+    "description": "Chrome extension: replaces YouTube's volume slider with a customizable one (size, colors, logarithmic/power/Bézier/custom volume curves).",
+    "license": "MIT",
+    "scripts": {
+        "test": "node --test test/*.test.js",
+        "test:e2e": "node test/e2e/e2e.mjs && node test/e2e/extension.mjs",
+        "test:all": "npm test && npm run test:e2e",
+        "lint": "eslint .",
+        "format": "prettier --write .",
+        "format:check": "prettier --check .",
+        "check": "npm run lint && npm run format:check && npm test",
+        "build": "node scripts/build.mjs",
+        "screenshots": "node scripts/screenshots.mjs",
+        "icons": "python3 scripts/make-icons.py"
+    },
+    "devDependencies": {
+        "@eslint/js": "10.0.1",
+        "eslint": "10.12.0",
+        "globals": "17.13.0",
+        "playwright-core": "^1.48.0",
+        "prettier": "3.9.9"
+    }
+}

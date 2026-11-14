@@ -1,0 +1,216 @@
+/* Volume Curve Slider — slider styles (injected on YouTube and used by the options preview). */
+
+.yvs-host > .ytp-volume-panel,
+.yvs-host .ytp-volume-panel {
+    display: none !important;
+}
+
+.ytp-volume-area.yvs-host {
+    display: inline-flex !important;
+    align-items: stretch;
+    vertical-align: top;
+}
+
+.yvs-slider {
+    --yvs-p: 0;
+    --yvs-width: 100px;
+    --yvs-track-h: 4px;
+    --yvs-thumb: 13px;
+    --yvs-radius: 4px;
+    --yvs-track-rgb: 255, 255, 255;
+    --yvs-track-a: 0.3;
+    --yvs-fill: #fff;
+    --yvs-thumb-c: #fff;
+    --yvs-label-c: #fff;
+    --yvs-pad: max(calc(var(--yvs-thumb) / 2), 2px);
+
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    height: 100%;
+    min-height: 24px;
+    vertical-align: top;
+    box-sizing: border-box;
+    padding: 0 6px 0 0;
+    cursor: pointer;
+    outline: none;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    flex: 0 0 auto;
+}
+
+.yvs-rail {
+    position: relative;
+    box-sizing: content-box;
+    width: var(--yvs-width);
+    height: 100%;
+    min-height: 24px;
+    padding: 0 var(--yvs-pad);
+    display: flex;
+    align-items: center;
+    transition:
+        width 0.18s ease,
+        padding 0.18s ease,
+        opacity 0.18s ease;
+}
+
+.yvs-track {
+    position: relative;
+    width: 100%;
+    height: var(--yvs-track-h);
+    border-radius: var(--yvs-radius);
+    background: rgba(var(--yvs-track-rgb), var(--yvs-track-a));
+}
+
+.yvs-fill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: calc(var(--yvs-p) * 100%);
+    border-radius: var(--yvs-radius);
+    background: var(--yvs-fill);
+}
+
+.yvs-thumb {
+    position: absolute;
+    top: 50%;
+    left: calc(var(--yvs-p) * 100%);
+    width: var(--yvs-thumb);
+    height: var(--yvs-thumb);
+    margin-left: calc(var(--yvs-thumb) / -2);
+    margin-top: calc(var(--yvs-thumb) / -2);
+    border-radius: 50%;
+    background: var(--yvs-thumb-c);
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.35);
+    transition: transform 0.12s ease;
+}
+
+.yvs-no-thumb .yvs-thumb {
+    background: transparent;
+    box-shadow: none;
+}
+
+.yvs-slider:hover .yvs-thumb,
+.yvs-slider.yvs-dragging .yvs-thumb {
+    transform: scale(1.15);
+}
+
+.yvs-slider:focus-visible .yvs-track {
+    box-shadow: 0 0 0 2px rgba(var(--yvs-track-rgb), 0.55);
+}
+
+.yvs-tooltip {
+    position: absolute;
+    left: 50%;
+    bottom: calc(100% + 12px);
+    transform: translateX(-50%);
+    padding: 3px 7px;
+    border-radius: 4px;
+    background: rgba(28, 28, 28, 0.92);
+    color: #fff;
+    font:
+        500 12px/16px Roboto,
+        Arial,
+        sans-serif;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.12s ease;
+    z-index: 70;
+}
+
+.yvs-slider:hover .yvs-tooltip,
+.yvs-slider.yvs-dragging .yvs-tooltip,
+.yvs-slider.yvs-flash .yvs-tooltip,
+.yvs-slider:focus-visible .yvs-tooltip {
+    opacity: 1;
+}
+
+.yvs-no-tooltip .yvs-tooltip {
+    display: none;
+}
+
+.yvs-label {
+    margin-left: 4px;
+    color: var(--yvs-label-c);
+    font:
+        500 12px/1 Roboto,
+        Arial,
+        sans-serif;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    min-width: 4.5ch;
+    text-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+}
+
+.yvs-slider[data-label='db'] .yvs-label {
+    min-width: 7.5ch;
+}
+
+.yvs-slider.yvs-muted .yvs-fill {
+    opacity: 0.35;
+}
+
+.yvs-slider.yvs-muted .yvs-thumb {
+    filter: grayscale(1) brightness(0.75);
+}
+
+.yvs-slider.yvs-muted .yvs-label {
+    opacity: 0.5;
+}
+
+/* Expand-on-hover mode */
+.yvs-slider.yvs-collapsible .yvs-rail {
+    width: 0;
+    padding: 0;
+    opacity: 0;
+}
+
+.yvs-host:hover .yvs-slider.yvs-collapsible .yvs-rail,
+.yvs-slider.yvs-collapsible:hover .yvs-rail,
+.yvs-slider.yvs-collapsible:focus-within .yvs-rail,
+.yvs-slider.yvs-collapsible.yvs-dragging .yvs-rail,
+.yvs-slider.yvs-collapsible.yvs-flash .yvs-rail {
+    width: var(--yvs-width);
+    padding: 0 var(--yvs-pad);
+    opacity: 1;
+}
+
+.yvs-slider.yvs-collapsible .yvs-label {
+    display: none;
+}
+.yvs-host:hover .yvs-slider.yvs-collapsible .yvs-label,
+.yvs-slider.yvs-collapsible.yvs-flash .yvs-label,
+.yvs-slider.yvs-collapsible:focus-within .yvs-label {
+    display: inline;
+}
+
+/* On-screen display shown when the volume changes via the keyboard */
+.yvs-osd {
+    position: absolute;
+    top: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 8px 14px;
+    border-radius: 18px;
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    font:
+        500 14px/18px Roboto,
+        Arial,
+        sans-serif;
+    font-variant-numeric: tabular-nums;
+    white-space: pre;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    z-index: 60;
+}
+.yvs-osd.yvs-osd-show {
+    opacity: 1;
+    transition-duration: 0.05s;
+}
