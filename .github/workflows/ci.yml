@@ -6,30 +6,75 @@ on:
     tags: ['v*']
   pull_request:
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ !startsWith(github.ref, 'refs/tags/') }}
+
 jobs:
-  test-and-build:
+  build:
+    name: Build and test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
-          node-version: 22
+          node-version: 24
           cache: npm
       - run: npm ci
       - run: npm run lint
       - run: npm run format:check
       - run: npm test
-      - name: End-to-end tests (real Chrome)
-        run: npm run test:e2e
-        env:
-          CHROME_PATH: /usr/bin/google-chrome
+      # Branded Chrome ignores --load-extension, so the e2e tests use
+      # Playwright's Chromium build, which still supports it.
+      - name: Install Chromium for e2e tests
+        run: |
+          npx playwright-core install --with-deps chromium
+          echo "CHROME_PATH=$(node -p "require('playwright-core').chromium.executablePath()")" >> "$GITHUB_ENV"
+      - run: npm run test:e2e
       - run: npm run build
       - uses: actions/upload-artifact@v4
         with:
           name: extension-zip
           path: dist/*.zip
-      - name: Attach zip to GitHub release
-        if: startsWith(github.ref, 'refs/tags/v')
+          if-no-files-found: error
+
+  release:
+    name: Release to Chrome Web Store
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    environment: chrome-web-store
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+      - uses: actions/download-artifact@v5
+        with:
+          name: extension-zip
+          path: dist
+      - name: Check tag matches manifest version
+        run: |
+          version=$(node -p "require('./manifest.json').version")
+          if [ "${GITHUB_REF_NAME#v}" != "$version" ]; then
+            echo "::error::Tag $GITHUB_REF_NAME does not match manifest.json version $version"
+            exit 1
+          fi
+      - name: Upload and submit for review
+        run: node scripts/publish-cws.mjs dist/*.zip
+        env:
+          CWS_CLIENT_ID: ${{ secrets.CWS_CLIENT_ID }}
+          CWS_CLIENT_SECRET: ${{ secrets.CWS_CLIENT_SECRET }}
+          CWS_REFRESH_TOKEN: ${{ secrets.CWS_REFRESH_TOKEN }}
+          CWS_PUBLISHER_ID: ${{ secrets.CWS_PUBLISHER_ID }}
+          CWS_EXTENSION_ID: ${{ vars.CWS_EXTENSION_ID }}
+      - name: Create GitHub release
         uses: softprops/action-gh-release@v2
         with:
           files: dist/*.zip
+          generate_release_notes: true

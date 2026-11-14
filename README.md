@@ -96,6 +96,9 @@ If Chrome isn't found automatically, set `CHROME_PATH`. On Windows, for example:
 
 ## Publishing to the Chrome Web Store
 
+The first release is manual, because the Web Store API can only update an
+existing item.
+
 1. Bump `version` in **both** `manifest.json` and `package.json`. The build fails if they differ.
 2. Run `npm run check && npm run test:e2e && npm run build`.
 3. Go to the [Chrome Web Store Developer Dashboard](https://chrome.google.com/webstore/devconsole). There's a one‑time US$5 registration fee. Click **New item** and upload `dist/youtube-volume-slider-<version>.zip`.
@@ -103,7 +106,40 @@ If Chrome isn't found automatically, set `CHROME_PATH`. On Windows, for example:
 5. Host [`PRIVACY.md`](PRIVACY.md) somewhere public, such as GitHub or GitHub Pages, and paste its URL into the privacy policy field.
 6. Submit for review.
 
-There's also a GitHub Actions workflow (`.github/workflows/ci.yml`). It runs all tests and builds the zip on every push. When you push a `v*` tag, it attaches the zip to a GitHub release.
+### Automated releases (GitHub Actions)
+
+`.github/workflows/ci.yml` runs lint, the format check, unit tests and the e2e tests
+(in Playwright's Chromium) and builds the zip on every push and pull request. When
+you push a `v*` tag, a second job checks that the tag matches `manifest.json`,
+uploads the zip to the Chrome Web Store, submits it for review and creates a GitHub
+release with the zip attached.
+
+One-time setup:
+
+1. In [Google Cloud Console](https://console.cloud.google.com/), enable the
+   **Chrome Web Store API** and create an OAuth client (type **Desktop app**).
+2. Get a refresh token for the scope `https://www.googleapis.com/auth/chromewebstore`,
+   signed in with the account that owns the item (for example with the
+   [OAuth Playground](https://developers.google.com/oauthplayground/) using your own
+   client ID and secret).
+3. In the GitHub repository, create an environment named `chrome-web-store`
+   (optionally with required reviewers, so each release waits for your approval)
+   and add:
+    - secrets `CWS_CLIENT_ID`, `CWS_CLIENT_SECRET`, `CWS_REFRESH_TOKEN`, and
+      `CWS_PUBLISHER_ID` (Developer Dashboard > Publisher > Settings);
+    - variable `CWS_EXTENSION_ID` (the item's 32-character ID).
+
+To release:
+
+```bash
+# bump "version" in manifest.json and package.json, commit, then:
+git tag v1.0.1
+git push origin main v1.0.1
+```
+
+Publishing goes through Web Store review as usual. To upload without submitting,
+run `node scripts/publish-cws.mjs dist/<zip> --upload-only` with the same
+variables set.
 
 ## License
 
