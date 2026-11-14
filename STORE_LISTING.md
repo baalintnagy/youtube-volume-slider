@@ -2,7 +2,7 @@
 
 ## Store listing tab
 
-**Name** (from manifest): Volume Curve Slider for YouTube
+**Name** (from manifest): Custom Volume Slider for YouTube
 
 **Summary** (from manifest, 126/132 chars):
 Replace YouTube's volume slider with a customizable one: size, colors, and logarithmic, power, Bézier or custom volume curves.
@@ -16,7 +16,7 @@ Replace YouTube's volume slider with a customizable one: size, colors, and logar
 ```
 YouTube's volume slider is linear, but your ears aren't. Most of the useful range ends up crammed into the bottom quarter of the slider: 10% is already loud, and fine control near silence is impossible.
 
-Volume Curve Slider replaces YouTube's slider with one you can shape and style yourself.
+Custom Volume Slider replaces YouTube's slider with one you can shape and style yourself.
 
 VOLUME CURVES
 • Logarithmic (dB): every step is the same number of decibels. You choose the dynamic range.
@@ -92,7 +92,11 @@ The extension must run on YouTube watch pages and embedded YouTube players to re
 - I do not use or transfer user data for purposes that are unrelated to my item's single purpose
 - I do not use or transfer user data to determine creditworthiness or for lending purposes
 
-**Privacy policy URL:** a public URL for `PRIVACY.md`. For example: `https://github.com/<you>/youtube-volume-slider/blob/main/PRIVACY.md`.
+**Privacy policy URL:** `https://baalintnagy.github.io/youtube-volume-slider/privacy.html` (the GitHub Pages site; see the README).
+
+**Homepage URL:** `https://baalintnagy.github.io/youtube-volume-slider/`
+
+**Support URL:** `https://github.com/baalintnagy/youtube-volume-slider/issues`
 
 ## Distribution tab
 

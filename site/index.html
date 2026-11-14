@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>{{name}}</title>
+        <meta name="description" content="{{description}}" />
+        <meta property="og:title" content="{{name}}" />
+        <meta property="og:description" content="{{description}}" />
+        <meta property="og:image" content="{{siteUrl}}images/promo-marquee-1400x560.png" />
+        <link rel="icon" href="images/icon128.png" />
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+        <header class="hero">
+            <div class="wrap hero-inner">
+                <img class="hero-icon" src="images/icon128.png" alt="" width="96" height="96" />
+                <h1>{{name}}</h1>
+                <p class="lead">
+                    YouTube's volume slider is linear, but your ears aren't. Replace it with a
+                    slider you can shape and style yourself.
+                </p>
+                <div class="actions">
+                    <a class="btn primary" href="{{installUrl}}">{{installLabel}}</a>
+                    <a class="btn" href="{{repoUrl}}">View on GitHub</a>
+                </div>
+                <p class="meta">Version {{version}} · Free and open source · No data collection</p>
+            </div>
+        </header>
+
+        <main>
+            <section class="wrap shot">
+                <img
+                    src="images/screenshot-1-log-curve.png"
+                    alt="Settings page with a logarithmic volume curve and a live slider preview"
+                    width="1280"
+                    height="800"
+                />
+            </section>
+
+            <section class="wrap problem">
+                <h2>Why a different slider?</h2>
+                <p>
+                    Hearing is logarithmic. On YouTube's linear slider, 10% is already loud and most
+                    of the useful range is squeezed into the bottom quarter, so fine control near
+                    silence is impossible. A volume curve spreads that range across the whole
+                    slider.
+                </p>
+            </section>
+
+            <section class="wrap features">
+                <article>
+                    <h3>Volume curves</h3>
+                    <ul>
+                        <li>
+                            <strong>Logarithmic (dB)</strong>: equal decibel steps, adjustable range
+                        </li>
+                        <li><strong>Power</strong>: output = positionⁿ</li>
+                        <li><strong>Bézier</strong>: drag two handles</li>
+                        <li><strong>Custom points</strong>: draw your own, with a dB view</li>
+                        <li><strong>Linear</strong>: the classic behavior</li>
+                        <li>Optional maximum-output cap</li>
+                    </ul>
+                </article>
+                <article>
+                    <h3>Appearance</h3>
+                    <ul>
+                        <li>Width from 30 to 400 px</li>
+                        <li>Track height, handle size, corner radius</li>
+                        <li>Fill, handle, track and label colors</li>
+                        <li>Label showing position %, output % or dB</li>
+                        <li>Hover tooltip and collapse-until-hovered</li>
+                        <li>Five presets</li>
+                    </ul>
+                </article>
+                <article>
+                    <h3>Smooth audio</h3>
+                    <ul>
+                        <li>Full precision, not YouTube's 1% steps</li>
+                        <li>Ramped changes, no clicks while dragging</li>
+                        <li>Keeps YouTube's loudness normalization</li>
+                        <li>No volume jumps between videos or ads</li>
+                    </ul>
+                </article>
+                <article>
+                    <h3>Controls</h3>
+                    <ul>
+                        <li>Drag, click, mouse wheel or trackpad</li>
+                        <li>↑ / ↓ in the player, with an on-screen readout</li>
+                        <li>Mute button and the M key work as usual</li>
+                        <li>Works in embedded players too</li>
+                    </ul>
+                </article>
+            </section>
+
+            <section class="wrap gallery">
+                <figure>
+                    <img
+                        src="images/screenshot-2-custom-curve.png"
+                        alt="Custom-points curve editor with a teal slider style"
+                        width="1280"
+                        height="800"
+                        loading="lazy"
+                    />
+                    <figcaption>Draw your own curve with custom points.</figcaption>
+                </figure>
+                <figure>
+                    <img
+                        src="images/screenshot-3-bezier.png"
+                        alt="Bézier curve editor with two draggable handles"
+                        width="1280"
+                        height="800"
+                        loading="lazy"
+                    />
+                    <figcaption>Or shape it with a Bézier curve.</figcaption>
+                </figure>
+            </section>
+
+            <section class="wrap privacy-note">
+                <h2>Private by design</h2>
+                <p>
+                    No analytics, no tracking, no network requests. Your settings stay in your own
+                    Chrome profile. Read the <a href="privacy.html">privacy policy</a>.
+                </p>
+            </section>
+        </main>
+
+        <footer class="wrap footer">
+            <a href="privacy.html">Privacy policy</a>
+            <a href="{{repoUrl}}">Source code</a>
+            <a href="{{repoUrl}}/issues">Report an issue</a>
+            <span>MIT License. Not affiliated with YouTube or Google.</span>
+        </footer>
+    </body>
+</html>

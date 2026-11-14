@@ -80,9 +80,9 @@ def promo(icon, w, h, path, title_size, sub_size):
     isz = int(h * 0.52)
     bg.paste(icon.resize((isz, isz), Image.LANCZOS), (int(h * 0.16), (h - isz) // 2), icon.resize((isz, isz), Image.LANCZOS))
     tx = int(h * 0.16) + isz + int(h * 0.1)
-    d.text((tx, h * 0.33), "Volume Curve", font=font(title_size), fill=(255, 255, 255))
+    d.text((tx, h * 0.33), "Custom Volume", font=font(title_size), fill=(255, 255, 255))
     d.text((tx, h * 0.33 + title_size * 1.15), "Slider", font=font(title_size), fill=(255, 140, 92))
-    d.text((tx, h * 0.33 + title_size * 2.45), "Custom volume curves for YouTube", font=font(sub_size, False), fill=(200, 200, 210))
+    d.text((tx, h * 0.33 + title_size * 2.45), "Volume curves and styling for YouTube", font=font(sub_size, False), fill=(200, 200, 210))
     os.makedirs(os.path.dirname(path), exist_ok=True)
     bg.convert("RGB").save(path)
 

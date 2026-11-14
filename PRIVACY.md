@@ -1,8 +1,8 @@
-# Privacy Policy: Volume Curve Slider for YouTube
+# Privacy Policy: Custom Volume Slider for YouTube
 
 _Last updated: 14 November 2026_
 
-Volume Curve Slider for YouTube ("the extension") does **not** collect, transmit, sell or share any personal data.
+Custom Volume Slider for YouTube ("the extension") does **not** collect, transmit, sell or share any personal data.
 
 ## What the extension stores
 
@@ -31,4 +31,4 @@ Uninstalling the extension deletes all stored data. You can also reset everythin
 
 ## Contact
 
-Questions? Open an issue in the project's repository.
+Questions? [Open an issue](https://github.com/baalintnagy/youtube-volume-slider/issues) in the project's repository.
