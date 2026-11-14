@@ -229,6 +229,7 @@
         slider.setAppearance(settings.appearance);
         slider.setValue(position ?? 1);
         insertSlider(area, slider.el);
+        slider.setTooltipHost(pl.querySelector('.ytp-chrome-bottom') || pl);
         area.classList.add('yvs-host');
         ps.area = area;
         ps.slider = slider;

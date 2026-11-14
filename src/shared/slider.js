@@ -14,6 +14,7 @@
     const WHEEL_MAX_CHANGE = 0.25;
     const WHEEL_COMMIT_DELAY_MS = 250;
     const FLASH_MS = 900;
+    const TOOLTIP_GAP_PX = 12;
     const DELTA_MODE_SCALE = { 0: 1, 1: 33, 2: 300 }; // pixel, line, page
     const SWALLOWED_EVENTS = ['mousedown', 'mouseup', 'click', 'dblclick', 'touchstart'];
 
@@ -60,6 +61,10 @@
             this.dragging = false;
             this._flashTimer = 0;
             this._wheelCommit = 0;
+            this._tipHost = null;
+            this._tipFrame = 0;
+            this._hover = false;
+            this._focusVisible = false;
             this._build();
             this._bindEvents();
             this.setValue(0);
@@ -99,9 +104,75 @@
             el.addEventListener('lostpointercapture', onPointerUp);
             el.addEventListener('wheel', (e) => this._onWheel(e), { passive: false });
             el.addEventListener('keydown', (e) => this._onKey(e));
+            el.addEventListener('pointerenter', () => this._setHover(true));
+            el.addEventListener('pointerleave', () => this._setHover(false));
+            el.addEventListener('focus', () => {
+                this._focusVisible = el.matches(':focus-visible');
+                this._syncTooltip();
+            });
+            el.addEventListener('blur', () => {
+                this._focusVisible = false;
+                this._syncTooltip();
+            });
             SWALLOWED_EVENTS.forEach((type) => {
                 el.addEventListener(type, (e) => e.stopPropagation());
             });
+        }
+
+        _setHover(hover) {
+            this._hover = hover;
+            this._syncTooltip();
+        }
+
+        /**
+         * Renders the tooltip inside `host` instead of inside the slider, so it can
+         * escape a clipping or low stacking-context ancestor (YouTube's left
+         * controls sit below the seek bar). Pass null to move it back.
+         */
+        setTooltipHost(host) {
+            this._tipHost = host || null;
+            this.tooltip.classList.toggle('yvs-tooltip-portal', Boolean(this._tipHost));
+            if (this._tipHost) {
+                this._tipHost.appendChild(this.tooltip);
+            } else {
+                this.tooltip.style.left = '';
+                this.tooltip.style.top = '';
+                this.thumb.appendChild(this.tooltip);
+            }
+            this._syncTooltip();
+        }
+
+        _tooltipWanted() {
+            const c = this.el.classList;
+            if (c.contains('yvs-no-tooltip') || !this.el.isConnected) {
+                return false;
+            }
+            return this._hover || this.dragging || this._focusVisible || c.contains('yvs-flash');
+        }
+
+        /** Shows/positions a portaled tooltip; follows the thumb while visible. */
+        _syncTooltip() {
+            if (!this._tipHost) {
+                return;
+            }
+            const show = this._tooltipWanted();
+            this.tooltip.classList.toggle('yvs-tooltip-show', show);
+            if (!show) {
+                cancelAnimationFrame(this._tipFrame);
+                this._tipFrame = 0;
+                return;
+            }
+            const host = this._tipHost.getBoundingClientRect();
+            const thumb = this.thumb.getBoundingClientRect();
+            this.tooltip.style.left = `${thumb.left + thumb.width / 2 - host.left}px`;
+            this.tooltip.style.top = `${thumb.top - host.top - TOOLTIP_GAP_PX}px`;
+            // Keep following the thumb (rail expand animation, value changes, resizes).
+            if (!this._tipFrame) {
+                this._tipFrame = requestAnimationFrame(() => {
+                    this._tipFrame = 0;
+                    this._syncTooltip();
+                });
+            }
         }
 
         _step(kind) {
@@ -139,6 +210,7 @@
             this.dragging = true;
             this.el.classList.add('yvs-dragging');
             this.el.focus({ preventScroll: true });
+            this._syncTooltip();
             this._emit(this._positionFromEvent(e), 'drag-start');
         }
 
@@ -157,6 +229,7 @@
             this.dragging = false;
             this.el.classList.remove('yvs-dragging');
             tryCall(() => this.el.releasePointerCapture(e.pointerId));
+            this._syncTooltip();
             this._commit();
         }
 
@@ -233,18 +306,25 @@
             this.el.classList.toggle('yvs-collapsible', Boolean(a.expandOnHover));
             this.el.classList.toggle('yvs-no-tooltip', !a.tooltip);
             this.el.classList.toggle('yvs-no-thumb', !(a.thumbSize > 0));
+            this._syncTooltip();
         }
 
         /** Briefly show the slider (expanded) and its tooltip, e.g. after a key press. */
         flash(ms = FLASH_MS) {
             this.el.classList.add('yvs-flash');
+            this._syncTooltip();
             clearTimeout(this._flashTimer);
-            this._flashTimer = setTimeout(() => this.el.classList.remove('yvs-flash'), ms);
+            this._flashTimer = setTimeout(() => {
+                this.el.classList.remove('yvs-flash');
+                this._syncTooltip();
+            }, ms);
         }
 
         destroy() {
             clearTimeout(this._flashTimer);
             clearTimeout(this._wheelCommit);
+            cancelAnimationFrame(this._tipFrame);
+            this.tooltip.remove();
             this.el.remove();
         }
     }

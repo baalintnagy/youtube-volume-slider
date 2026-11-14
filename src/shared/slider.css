@@ -134,6 +134,17 @@
     display: none;
 }
 
+/* Tooltip moved out of the controls (see Slider#setTooltipHost) so the seek
+   bar cannot cover it; JS sets left/top to the point above the thumb. */
+.yvs-tooltip.yvs-tooltip-portal {
+    bottom: auto;
+    transform: translate(-50%, -100%);
+    z-index: 1000;
+}
+.yvs-tooltip.yvs-tooltip-portal.yvs-tooltip-show {
+    opacity: 1;
+}
+
 .yvs-label {
     margin-left: 4px;
     color: var(--yvs-label-c);
