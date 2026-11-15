@@ -1,6 +1,6 @@
 {
     "name": "youtube-volume-slider",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "private": true,
     "description": "Chrome extension: replaces YouTube's volume slider with a customizable one (size, colors, logarithmic/power/Bézier/custom volume curves).",
     "license": "MIT",

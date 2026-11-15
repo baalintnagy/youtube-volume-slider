@@ -2,7 +2,7 @@
     "manifest_version": 3,
     "name": "Custom Volume Slider for YouTube",
     "short_name": "Custom Volume",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "Replace YouTube's volume slider with a customizable one: size, colors, and logarithmic, power, Bézier or custom volume curves.",
     "minimum_chrome_version": "111",
     "icons": {
